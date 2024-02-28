@@ -2,8 +2,8 @@ package com.bhaskarblur.sunbirdpoc.core.constants
 
 object ApiConstants {
 
-    const val Identity_Base_Url = "http://localhost:.../"
-    const val Credential_Base_Url = "http://localhost:..."
+    const val Identity_Base_Url = "https://4355-115-240-127-98.ngrok-free.app/"
+    const val Credential_Base_Url = " https://5cae-115-240-127-98.ngrok-free.app"
 
     const val generateDidBody = """{
     "content": 

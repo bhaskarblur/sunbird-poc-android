@@ -25,6 +25,6 @@ interface ApiRoutes {
    suspend fun getCredentialWithTemplate(@Url baseUrl: String,
                                          @Path("credId") credId : String) : IssueCredentialResponseBody
 
-   @GET("{url}")
+   @GET
    suspend fun verifyCredential(@Url url: String) : VerifyCredentialResponseBody
 }

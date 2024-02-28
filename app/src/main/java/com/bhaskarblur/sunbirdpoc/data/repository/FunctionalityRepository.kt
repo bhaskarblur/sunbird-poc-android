@@ -15,47 +15,52 @@ import com.bhaskarblur.sunbirdpoc.model.stringToIssueCredentialRequestBody
 import com.bhaskarblur.sync_realtimecontentwriting.data.remote.ApiRoutes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class FunctionalityRepository(
+class FunctionalityRepository @Inject constructor(
     private val normalRoutes: ApiRoutes,
     private val templateRoutes: ApiRoutes,
     private val storageManager: LocalStorageManager
 ) {
 
-    fun generateDid(values : List<String>) : Flow<GenerateModelResponseBody> = flow{
+    fun generateDid(values: List<String>): Flow<GenerateModelResponseBody> = flow {
         try {
             val body = stringToGenerateModelRequestBody(generateDidBody, values)
             val result = normalRoutes.generateDid(Identity_Base_Url, body)
-            if(result.content[0].id.isNullOrEmpty().not()) {
+            if (result.content[0].id.isNullOrEmpty().not()) {
                 val did = storageManager.saveDid(result.content[0].id!!)
                 Log.d("generatedDid", did.toString())
             }
             emit(result)
-        }
-        catch (e : Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
             emit(GenerateModelResponseBody(listOf()))
         }
     }
 
-    fun issueCredential(credValues : CredentialSubject) : Flow<IssueCredentialResponseBody> = flow{
+    fun issueCredential(credValues: CredentialSubject): Flow<IssueCredentialResponseBody> = flow {
         val did = storageManager.getDid("")
         try {
             val values = listOf(
-                did,credValues.studentName!!, credValues.courseName!!, credValues.instituteName!!,
+                did, credValues.studentName!!, credValues.courseName!!, credValues.instituteName!!,
                 credValues.issuedOn!!, credValues.skill!!
             )
             val body = stringToIssueCredentialRequestBody(ApiConstants.issueCredBody, values)
             emit(normalRoutes.issueCredential(Credential_Base_Url, body))
-        }
-        catch (e : Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
             emit(IssueCredentialResponseBody())
         }
     }
 
-    fun verifyCredential(url : String) : Flow<VerifyCredentialResponseBody> = flow{
-        val result = emit(normalRoutes.verifyCredential(Credential_Base_Url+url))
-
+    fun verifyCredential(url: String): Flow<VerifyCredentialResponseBody> = flow {
+        try {
+            val result = normalRoutes.verifyCredential(Credential_Base_Url + url)
+            Log.d("verifiedCredential", result.toString())
+            emit(result)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(VerifyCredentialResponseBody())
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.bhaskarblur.sunbirdpoc.di
 
 import android.content.Context
 import com.bhaskarblur.gptbot.network.LoggingInterceptor
+import com.bhaskarblur.gptbot.network.NormalHeaderInterceptor
 import com.bhaskarblur.gptbot.network.TemplateHeaderInterceptor
 import com.bhaskarblur.sunbirdpoc.core.constants.ApiConstants.Credential_Base_Url
 import com.bhaskarblur.sunbirdpoc.data.local.LocalStorageManager
@@ -50,14 +51,14 @@ class AppModules {
     @Provides
     @Named("regularApiClient")
     fun regularApiClient(@ApplicationContext context: Context): Retrofit = ApiClient.getInstance(
-        okHttpClient((TemplateHeaderInterceptor(context))),
+        okHttpClient((NormalHeaderInterceptor(context))),
         Credential_Base_Url
     )
 
     @Provides
     @Singleton
     @Named("regularApiRoute")
-    fun returnRegularApiRoutes(@Named("regularApiClient")apiClient: Retrofit): ApiRoutes =
+    fun returnRegularApiRoutes(@Named("regularApiClient") apiClient: Retrofit): ApiRoutes =
         apiClient.create(ApiRoutes::class.java)
 
     @Provides
